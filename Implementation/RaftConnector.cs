@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using RaftAlgo.Helpers;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net.Sockets;
 
 namespace RaftAlgo.Implementations {
 
     /// <summary>
-    /// Connects to nodes through a defined WEB API
+    /// Connects to nodes through a defined port
     /// </summary>
 
     public class RaftConnector : IRaftConnector {
@@ -16,20 +17,17 @@ namespace RaftAlgo.Implementations {
         /// ID matching an existing node's ID.
         /// </summary>
         public uint NodeId { get; private set; }
-        private string baseURL { get; set; }
-        private readonly HttpClient client = new HttpClient();
+        private string basePORT { get; set; }
+        UdpClient udpClient = new UdpClient();
 
         /// <summary>
-        /// Initializes a connector through a base URL.
+        /// Initializes a connector through a base PORT.
         /// </summary>
         /// <param name="nodeId">ID that represents this connector's node</param>
-        /// <param name="baseURL">Base URL to make requests on</param>
-        public RaftConnector(uint nodeId, string baseURL) {
+        /// <param name="basePORT">Base PORT to make requests on</param>
+        public RaftConnector(uint nodeId, string basePort) {
             this.NodeId = nodeId;
-            if (!baseURL.EndsWith("/")) {
-                baseURL += "/";
-            }
-            this.baseURL = baseURL;
+            this.basePORT = basePort;
         }
 
         /// <summary>
